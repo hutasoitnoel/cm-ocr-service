@@ -3,6 +3,8 @@ const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
 const cors = require('cors');
+const dotenv = require('dotenv')
+dotenv.config()
 
 const parseKTP = require('./helpers/parseKTP');
 const parseSIM = require('./helpers/parseSIM');
@@ -10,7 +12,7 @@ const parseSIM = require('./helpers/parseSIM');
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: process.env.UI_BASE_URL,
     credentials: true
 }))
 
@@ -66,7 +68,6 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 });
 
 // Start the server
-const PORT = 5000;
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running at port ${process.env.PORT}`);
 });
