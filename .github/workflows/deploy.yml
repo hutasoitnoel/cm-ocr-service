@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            kill $(ps aux | grep 'serve -s' | grep -v grep | awk '{print $2}')
+            fuser -k 5000/tcp || echo "No process running on port 5000"
             cd builds/cm-ocr-service
             git pull
-            nohup serve -s >/dev/null 2>&1 &
+            nohup node bundle.js > app.log 2>&1 &
