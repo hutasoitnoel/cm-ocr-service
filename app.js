@@ -2,8 +2,10 @@ const tesseract = require('tesseract.js');
 const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
+const cors = require('cors');
+
 const parseKTP = require('./helpers/parseKTP');
-const cors = require('cors')
+const parseSIM = require('./helpers/parseSIM');
 
 const app = express();
 
@@ -37,11 +39,23 @@ app.post('/upload', upload.single('image'), async (req, res) => {
             tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,-./ ',
         });
 
+        let payload;
+        const ktpResult = parseKTP(response.data.text)
+        const simResult = parseSIM(response.data.text)
+
+        if (ktpResult.score > simResult.score) {
+            payload = ktpResult.data
+        } else {
+            payload = simResult.data
+        }
+
         console.log('OCR Result:');
         console.log(response.data.text)
         console.log(parseKTP(response.data.text));
+        console.log(parseSIM(response.data.text))
 
-        return res.status(200).json(parseKTP(response.data.text));
+
+        return res.status(200).json(payload);
     } catch (error) {
         console.error('Error processing image:', error);
         return res.status(500).json({ error: 'Error processing image.' });

@@ -1,35 +1,52 @@
+const calculateScore = require('./calculateScore')
+
+const refineData = data => {
+    try {
+        return {
+            ...data,
+            religion: data.religion.split(/\s/)[0],
+            maritalStatus: data.maritalStatus.split(/\s/)[0],
+            subDistrict: data.subDistrict.split(/\s/)[0],
+            district: data.district.split(/\s/)[0],
+            citizenship: data.citizenship.split(/\s/)[0],
+            validity: data.validity.split(/\s/)[0]
+        }
+    } catch (err) {
+        return data
+    }
+}
+
 module.exports = text => {
-    let result = {
-        provinsi: text.match(/PROVINSI\s+(.*)/i)?.[1]?.trim(),
-        kota: text.match(/JAKARTA\s+BARAT/i)?.[0]?.trim(),
-        nik: text.match(/NIK\s*:\s*([\d]+)/i)?.[1]?.trim(),
-        nama: text.match(/Nama\s*:\s*(.*)/i)?.[1]?.trim(),
-        ttl: text.match(/Tempat.*:\s*(.*)/i)?.[1]?.trim(),
-        kelamin: text.match(/Jenis Kelamin\s*:\s*(\w+)/i)?.[1]?.trim(),
-        darah: text.match(/Gol\. Darah\s*:\s*(\w+)/i)?.[1]?.trim(),
-        alamat: text.match(/Alamat\s*:\s*(.*)/i)?.[1]?.trim(),
+    const data = {
+        type: 'KTP',
+        province: text.match(/PROVINSI\s+(.*)/i)?.[1]?.trim(),
+        city: text.match(/JAKARTA\s+BARAT/i)?.[0]?.trim(),
+        nationalId: text.match(/NIK\s*:\s*([\d]+)/i)?.[1]?.trim(),
+        name: text.match(/Nama\s*:\s*(.*)/i)?.[1]?.trim(),
+        placeAndDateOfBirth: text.match(/Tempat.*:\s*(.*)/i)?.[1]?.trim(),
+        gender: text.match(/Jenis Kelamin\s*:\s*(\w+)/i)?.[1]?.trim(),
+        bloodType: text.match(/Gol\. Darah\s*:\s*(\w+)/i)?.[1]?.trim(),
+        address: text.match(/Alamat\s*:\s*(.*)/i)?.[1]?.trim(),
         rtrw: text.match(/RTRW\s*:\s*([\d\/]+)/i)?.[1]?.trim(),
-        kelurahan: text.match(/(?:KeliDesa.*?:|Kel\/Desa\s*:\s*)(.*)/i)?.[1]?.trim(),
-        kecamatan: text.match(/Kecamatan\s*:\s*(.*)/i)?.[1]?.trim(),
-        agama: text.match(/Agama\s*:\s*(.*)/i)?.[1]?.trim(),
-        statusKawin: text
+        subDistrict: text.match(/(?:KeliDesa.*?:|Kel\/Desa\s*:\s*)(.*)/i)?.[1]?.trim(),
+        district: text.match(/Kecamatan\s*:\s*(.*)/i)?.[1]?.trim(),
+        religion: text.match(/Agama\s*:\s*(.*)/i)?.[1]?.trim(),
+        maritalStatus: text
             .match(/Status Perkawinan\s*:\s*(.*)/i)?.[1]
             ?.trim(),
-        pekerjaan: text.match(/Pekerjaan\s*:\s*(.*)/i)?.[1]?.trim(),
-        kewarganegaraan: text
+        occupation: text.match(/Pekerjaan\s*:\s*(.*)/i)?.[1]?.trim(),
+        citizenship: text
             .match(/Kewarganegaraan\s*:\s*(.*)/i)?.[1]
             ?.trim(),
-        berlakuHingga: text
+        validity: text
             .match(/Berlaku Hingga\s*:\s*(.*)/i)?.[1]
             ?.trim(),
     }
 
-    result.agama = result.agama.split(/\s/)[0]
-    result.statusKawin = result.statusKawin.split(/\s/)[0]
-    result.kelurahan = result.kelurahan.split(/\s/)[0]
-    result.kecamatan = result.kecamatan.split(/\s/)[0]
-    result.kewarganegaraan = result.kewarganegaraan.split(/\s/)[0]
-    result.berlakuHingga = result.berlakuHingga.split(/\s/)[0]
+    const result = refineData(data)
 
-    return result
+    return {
+        score: calculateScore(result),
+        data: result
+    }
 };
