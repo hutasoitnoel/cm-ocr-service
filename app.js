@@ -20,6 +20,12 @@ app.use(cors({
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
+app.get('/ping', (req, res) => {
+    return res.status(200).json({
+        message: 'pong!'
+    })
+})
+
 // Endpoint to handle file uploads
 app.post('/upload', upload.single('image'), async (req, res) => {
     if (!req.file) {
