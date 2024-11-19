@@ -47,7 +47,7 @@ module.exports = text => {
         occupation: text.match(/5\.\s*(.*)/)?.[1]?.trim(), // Line starting with "5."
         place_of_issue: text.match(/6\.\s*(.*)/)?.[1]?.trim().split(/\s/)[0],
         expiration_date: findValidity(text), // Line starting with "6."
-        id_Number: text.match(/[\w$]{4}-[\w$]{4}-[\w$]{6}/)?.[0]?.trim(), // License number pattern
+        id_number: text.match(/[\w$]{4}-[\w$]{4}-[\w$]{6}/)?.[0]?.trim(), // License number pattern
     };
 
     const result = refineData(data, text)
