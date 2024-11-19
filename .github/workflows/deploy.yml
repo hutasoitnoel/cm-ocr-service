@@ -41,4 +41,5 @@ jobs:
             fuser -k 5000/tcp || echo "No process running on port 5000"
             cd builds/cm-ocr-service
             git pull
-            nohup node bundle.js > app.log 2>&1 &
+            npm install --production
+            nohup node app.js > app.log 2>&1 &
