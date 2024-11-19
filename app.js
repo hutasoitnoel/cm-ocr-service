@@ -1,4 +1,4 @@
-const tesseract = require('tesseract.js');
+const { createWorker } = require('tesseract.js');
 const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
@@ -34,10 +34,13 @@ app.post('/upload', upload.single('image'), async (req, res) => {
             .resize({ width: 1200 })
             .toBuffer();
 
-        console.log('Recognizing image');
-        const response = await tesseract.recognize(processedBuffer, 'ind', {
-            tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,-./ ',
-        });
+        const worker = await createWorker('ind');
+
+        await worker.setParameters({
+            tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,-./: '
+        })
+
+        const response = await worker.recognize(processedBuffer);
 
         let payload;
         const ktpResult = parseKTP(response.data.text)
