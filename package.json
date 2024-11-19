@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon app.js",
-    "build": "babel . --out-dir dist --extensions \".js\" --ignore node_modules",
+    "build": "esbuild app.js --bundle --platform=node --outfile=dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -20,9 +20,7 @@
     "tesseract.js": "^5.1.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.25.9",
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
+    "esbuild": "^0.24.0",
     "nodemon": "^3.1.7"
   }
 }
