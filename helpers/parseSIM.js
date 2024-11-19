@@ -25,7 +25,7 @@ const findValidity = text => {
     return matches ? matches[matches.length - 1] : null; // Return the last match
 };
 
-const refineData = data => {
+const refineData = (data, text) => {
     try {
         return {
             ...data,
@@ -41,16 +41,16 @@ module.exports = text => {
         type: 'SIM',
         name: text.match(/1\.\s*(.*)/)?.[1]?.trim(), // Line starting with "1."
         dob: text.match(/2\.\s*(.*)/)?.[1]?.trim(), // Line starting with "2."
-        bloodType: text.match(/3\.\s*(.*)/)?.[1]?.split('-')[0]?.trim(), // Line starting with "3." (before "-")
+        blood_type: text.match(/3\.\s*(.*)/)?.[1]?.split('-')[0]?.trim(), // Line starting with "3." (before "-")
         gender: text.match(/3\.\s*(.*)/)?.[1]?.split('-')[1]?.trim(), // Line starting with "3." (after "-")
         address: text.match(/4\.\s*(.*)/)?.[1]?.trim(), // Line starting with "4."
-        job: text.match(/5\.\s*(.*)/)?.[1]?.trim(), // Line starting with "5."
-        placeOfIssue: text.match(/6\.\s*(.*)/)?.[1]?.trim().split(/\s/)[0],
-        validUntil: findValidity(text), // Line starting with "6."
-        licenseNumber: text.match(/[\w$]{4}-[\w$]{4}-[\w$]{6}/)?.[0]?.trim(), // License number pattern
+        occupation: text.match(/5\.\s*(.*)/)?.[1]?.trim(), // Line starting with "5."
+        place_of_issue: text.match(/6\.\s*(.*)/)?.[1]?.trim().split(/\s/)[0],
+        expiration_date: findValidity(text), // Line starting with "6."
+        id_Number: text.match(/[\w$]{4}-[\w$]{4}-[\w$]{6}/)?.[0]?.trim(), // License number pattern
     };
 
-    const result = refineData(data)
+    const result = refineData(data, text)
 
     return {
         score: calculateScore(result),
